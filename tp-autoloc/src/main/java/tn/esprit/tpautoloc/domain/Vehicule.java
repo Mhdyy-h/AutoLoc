@@ -5,6 +5,9 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import tn.esprit.tpautoloc.domain.enums.CategorieVehicule;
+import tn.esprit.tpautoloc.domain.enums.StatutVehicule;
+
 import java.math.BigDecimal;
 @Entity
 @Table(name = "vehicule")

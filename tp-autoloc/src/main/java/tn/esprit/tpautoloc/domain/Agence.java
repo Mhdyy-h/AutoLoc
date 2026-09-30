@@ -5,21 +5,19 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import tn.esprit.tpautoloc.domain.enums.ModePaiement;
-
-import java.time.LocalDate;
 
 @Entity
+@Table(name = "agence")
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class Paiement {
+public class Agence {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long idPaiement;
-    private Double montant;
-    private LocalDate datePaiement;
-    @Enumerated(EnumType.STRING)
-    private ModePaiement modePaiement;
+    private Long idAgence;
+    private String nom;
+    private String ville;
+    private String adresse;
+    private String telephone;
 }
