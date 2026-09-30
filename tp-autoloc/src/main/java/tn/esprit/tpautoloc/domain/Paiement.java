@@ -6,8 +6,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import tn.esprit.tpautoloc.domain.enums.ModePaiement;
-
 import java.time.LocalDate;
+import java.util.*;
 
 @Entity
 @Getter
@@ -22,4 +22,8 @@ public class Paiement {
     private LocalDate datePaiement;
     @Enumerated(EnumType.STRING)
     private ModePaiement modePaiement;
+
+    // Étape 6 : Relation inverse ManyToOne avec Contrat
+    @ManyToOne
+    private Contrat contrat;
 }

@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import java.time.LocalDate;
+import java.util.*;
 
 @Entity
 @Getter
@@ -19,4 +20,12 @@ public class Contrat {
     private LocalDate dateSignature;
     private Double montantTotal;
     private Boolean valide;
+
+    // Étape 5 : Relation inverse OneToOne avec Reservation
+    @OneToOne
+    private Reservation reservation;
+
+    // Étape 5 : Relation OneToMany avec Paiement
+    @OneToMany(mappedBy = "contrat", cascade = CascadeType.ALL)
+    private List<Paiement> paiements;
 }

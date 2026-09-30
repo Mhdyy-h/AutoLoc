@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import java.time.LocalDate;
+import java.util.*;
 
 @Entity
 @Getter
@@ -19,4 +20,8 @@ public class Maintenance {
     private LocalDate dateDebut;
     private LocalDate dateFin;
     private String description;
+
+    // Étape 7 : Relation ManyToOne avec Vehicule
+    @ManyToOne
+    private Vehicule vehicule;
 }

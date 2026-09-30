@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import java.util.*;
 
 @Entity
 @Getter
@@ -16,4 +17,8 @@ public class Equipement {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long idEquipement;
     private String libelle;
+
+    // Étape 8 : Relation inverse ManyToMany avec Vehicule
+    @ManyToMany(mappedBy = "equipements")
+    private List<Vehicule> vehicules;
 }

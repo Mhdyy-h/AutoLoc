@@ -5,7 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import tn.esprit.tpautoloc.domain.enums.RoleEmploye;
+import java.time.LocalDate;
 import java.util.*;
 
 @Entity
@@ -13,16 +13,18 @@ import java.util.*;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class Employe {
+public class Client {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long idEmploye;
+    private Long idClient;
     private String nom;
     private String prenom;
-    @Enumerated(EnumType.STRING)
-    private RoleEmploye role;
+    private String email;
+    private String telephone;
+    private String numPermis;
+    private LocalDate dateInscription;
 
-    // Étape 1 : Relation ManyToOne avec Agence
-    @ManyToOne
-    private Agence agence;
+    // Étape 3 : Relation OneToMany avec Reservation
+    @OneToMany(mappedBy = "client", cascade = CascadeType.ALL)
+    private List<Reservation> reservations;
 }

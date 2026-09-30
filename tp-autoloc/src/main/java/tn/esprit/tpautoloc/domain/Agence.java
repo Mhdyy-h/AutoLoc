@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import java.util.*;
 
 @Entity
 @Table(name = "agence")
@@ -20,4 +21,12 @@ public class Agence {
     private String ville;
     private String adresse;
     private String telephone;
+
+    // Étape 1 : Relation OneToMany avec Employe
+    @OneToMany(mappedBy = "agence", cascade = CascadeType.ALL)
+    private List<Employe> employes;
+
+    // Étape 1 : Relation OneToMany avec Vehicule
+    @OneToMany(mappedBy = "agence", cascade = CascadeType.ALL)
+    private List<Vehicule> vehicules;
 }
