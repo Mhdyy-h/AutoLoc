@@ -1,17 +1,22 @@
 package tn.esprit.tpautoloc.service.impl;
 
+import java.time.LocalDate;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import tn.esprit.tpautoloc.domain.Client;
 import tn.esprit.tpautoloc.domain.Reservation;
+import tn.esprit.tpautoloc.domain.enums.StatutReservation;
 import tn.esprit.tpautoloc.exception.ResourceNotFoundException;
 import tn.esprit.tpautoloc.repository.IReservationRepository;
 import tn.esprit.tpautoloc.service.IReservationService;
+import tn.esprit.tpautoloc.service.observer.ReservationSubject;
 
 @Service
 @RequiredArgsConstructor
 public class ReservationServiceImpl implements IReservationService {
 
+    private final ReservationSubject reservationSubject;
     private final IReservationRepository reservationRepository;
 
     @Override
@@ -19,6 +24,33 @@ public class ReservationServiceImpl implements IReservationService {
         validerDates(reservation);
         return reservationRepository.save(reservation);
     }
+
+
+    /**
+     * Crée une réservation et notifie tous les observateurs
+     */
+    public Reservation creerReservation(Client client) {
+        Reservation reservation = Reservation.builder()
+                .client(client)
+                .dateDebut(LocalDate.now())
+                .statut(StatutReservation.valueOf(StatutReservation.CONFIRMEE.name()))
+                .build();
+// Déclenche le process métier via le pattern Observer
+        reservationSubject.notifierConfirmation(reservation);
+        return reservation;
+    }
+
+    /**
+     * Annule une réservation existante et notifie tous les observateurs
+     */
+    public Reservation annulerReservation(Reservation reservation) {
+        reservation.setStatut(StatutReservation.valueOf(StatutReservation.ANNULEE.name()));
+        reservationSubject.notifierAnnulation(reservation);
+        return reservation;
+    }
+
+
+
 
     @Override
     public Reservation findById(Long id) {

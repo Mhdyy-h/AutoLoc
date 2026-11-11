@@ -391,4 +391,28 @@ class TpAutolocApplicationTests {
         System.out.println("Vérification OK : l'équipement n'existe plus.");
         System.out.println("==============================================\n");
     }
+
+    // Test des observateurs de création et annulation de réservations
+
+    @Autowired
+    private IReservationService reservationService;
+
+    @Test
+    void ReservationServiceTest() {
+
+        Client client = Client.builder()
+                .idClient(31L)
+                .nom("Dupont")
+                .email("jean.dupont@gmail.com")
+                .telephone("0612345678")
+                .build();
+
+        Reservation reservation = reservationService.creerReservation(client);
+
+        System.out.println("........");
+
+        // 2. Annulation -> déclenche les observateurs d'annulation
+        reservationService.annulerReservation(reservation);
+    }
+
 }
