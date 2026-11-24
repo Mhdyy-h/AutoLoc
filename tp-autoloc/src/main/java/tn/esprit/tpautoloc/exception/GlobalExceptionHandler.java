@@ -15,6 +15,10 @@ import java.util.Map;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
+    private static final String KEY_STATUT = "statut";
+    private static final String KEY_MESSAGE = "message";
+    private static final String KEY_HORODATAGE = "horodatage";
+
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<Map<String, String>> handleValidation(MethodArgumentNotValidException ex) {
         Map<String, String> erreurs = new HashMap<>();
@@ -26,27 +30,27 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(ResourceNotFoundException.class)
     public ResponseEntity<Map<String, Object>> handleResourceNotFound(ResourceNotFoundException ex) {
         Map<String, Object> body = new LinkedHashMap<>();
-        body.put("statut", HttpStatus.NOT_FOUND.value());
-        body.put("message", ex.getMessage());
-        body.put("horodatage", LocalDateTime.now(ZoneId.systemDefault()));
+        body.put(KEY_STATUT, HttpStatus.NOT_FOUND.value());
+        body.put(KEY_MESSAGE, ex.getMessage());
+        body.put(KEY_HORODATAGE, LocalDateTime.now(ZoneId.systemDefault()));
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(body);
     }
 
     @ExceptionHandler(IllegalArgumentException.class)
     public ResponseEntity<Map<String, Object>> handleIllegalArgument(IllegalArgumentException ex) {
         Map<String, Object> body = new LinkedHashMap<>();
-        body.put("statut", HttpStatus.BAD_REQUEST.value());
-        body.put("message", ex.getMessage());
-        body.put("horodatage", LocalDateTime.now(ZoneId.systemDefault()));
+        body.put(KEY_STATUT, HttpStatus.BAD_REQUEST.value());
+        body.put(KEY_MESSAGE, ex.getMessage());
+        body.put(KEY_HORODATAGE, LocalDateTime.now(ZoneId.systemDefault()));
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(body);
     }
 
     @ExceptionHandler(IllegalStateException.class)
     public ResponseEntity<Map<String, Object>> handleIllegalState(IllegalStateException ex) {
         Map<String, Object> body = new LinkedHashMap<>();
-        body.put("statut", HttpStatus.BAD_REQUEST.value());
-        body.put("message", ex.getMessage());
-        body.put("horodatage", LocalDateTime.now(ZoneId.systemDefault()));
+        body.put(KEY_STATUT, HttpStatus.BAD_REQUEST.value());
+        body.put(KEY_MESSAGE, ex.getMessage());
+        body.put(KEY_HORODATAGE, LocalDateTime.now(ZoneId.systemDefault()));
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(body);
     }
 }

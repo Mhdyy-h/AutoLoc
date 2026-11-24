@@ -24,6 +24,8 @@ import tn.esprit.tpautoloc.web.mapper.ReservationMapper;
 @Transactional
 public class ReservationServiceImpl implements IReservationService {
 
+    private static final String RESSOURCE_RESERVATION = "Reservation";
+
     private final IReservationRepository reservationRepository;
     private final IClientRepository clientRepository;
     private final IVehiculeRepository vehiculeRepository;
@@ -62,7 +64,7 @@ public class ReservationServiceImpl implements IReservationService {
     @Transactional(readOnly = true)
     public ReservationResponseDTO findById(Long id) {
         Reservation reservation = reservationRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Reservation", id));
+                .orElseThrow(() -> new ResourceNotFoundException(RESSOURCE_RESERVATION, id));
         return reservationMapper.toDto(reservation);
     }
 
@@ -78,7 +80,7 @@ public class ReservationServiceImpl implements IReservationService {
     public ReservationResponseDTO update(Long id, ReservationRequestDTO dto) {
         validerDates(dto.getDateDebut(), dto.getDateFin());
         Reservation existante = reservationRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Reservation", id));
+                .orElseThrow(() -> new ResourceNotFoundException(RESSOURCE_RESERVATION, id));
 
         if (dto.getClientId() != null) {
             Client client = clientRepository.findById(dto.getClientId())
@@ -101,7 +103,7 @@ public class ReservationServiceImpl implements IReservationService {
     @Override
     public void deleteById(Long id) {
         if (!reservationRepository.existsById(id)) {
-            throw new ResourceNotFoundException("Reservation", id);
+            throw new ResourceNotFoundException(RESSOURCE_RESERVATION, id);
         }
         reservationRepository.deleteById(id);
     }
@@ -109,7 +111,7 @@ public class ReservationServiceImpl implements IReservationService {
     @Override
     public ReservationResponseDTO annulerReservation(Long id) {
         Reservation existante = reservationRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Reservation", id));
+                .orElseThrow(() -> new ResourceNotFoundException(RESSOURCE_RESERVATION, id));
         existante.setStatut(StatutReservation.ANNULEE);
         reservationSubject.notifierAnnulation(existante);
         return reservationMapper.toDto(reservationRepository.save(existante));
@@ -122,7 +124,7 @@ public class ReservationServiceImpl implements IReservationService {
     public Reservation creerReservation(Client client) {
         Reservation reservation = Reservation.builder()
                 .client(client)
-                .dateDebut(LocalDate.now())
+                .dateDebut(LocalDate.now(java.time.ZoneId.systemDefault()))
                 .statut(StatutReservation.CONFIRMEE)
                 .build();
         reservationSubject.notifierConfirmation(reservation);

@@ -16,6 +16,7 @@ import tn.esprit.tpautoloc.web.validator.ReservationRequestValidator;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -73,7 +74,7 @@ class ValidationTests {
     void testPaiementMontantNegatifOuNul() {
         PaiementDTO paiementNegatif = PaiementDTO.builder()
                 .montant(-50.0)
-                .modePaiement(ModePaiement.CARTE_BANCAIRE)
+                .modePaiement(ModePaiement.CARTE)
                 .contratId(1L)
                 .build();
 
@@ -82,7 +83,7 @@ class ValidationTests {
 
         PaiementDTO paiementZero = PaiementDTO.builder()
                 .montant(0.0)
-                .modePaiement(ModePaiement.CARTE_BANCAIRE)
+                .modePaiement(ModePaiement.CARTE)
                 .contratId(1L)
                 .build();
 
@@ -117,8 +118,8 @@ class ValidationTests {
         ReservationRequestDTO dtoAnterieure = ReservationRequestDTO.builder()
                 .clientId(1L)
                 .vehiculeId(1L)
-                .dateDebut(LocalDate.now().plusDays(5))
-                .dateFin(LocalDate.now().plusDays(2))
+                .dateDebut(LocalDate.now(ZoneId.systemDefault()).plusDays(5))
+                .dateFin(LocalDate.now(ZoneId.systemDefault()).plusDays(2))
                 .build();
 
         Errors errorsAnterieure = new BeanPropertyBindingResult(dtoAnterieure, "reservationRequestDTO");
@@ -130,8 +131,8 @@ class ValidationTests {
         ReservationRequestDTO dtoEgale = ReservationRequestDTO.builder()
                 .clientId(1L)
                 .vehiculeId(1L)
-                .dateDebut(LocalDate.now().plusDays(3))
-                .dateFin(LocalDate.now().plusDays(3))
+                .dateDebut(LocalDate.now(ZoneId.systemDefault()).plusDays(3))
+                .dateFin(LocalDate.now(ZoneId.systemDefault()).plusDays(3))
                 .build();
 
         Errors errorsEgale = new BeanPropertyBindingResult(dtoEgale, "reservationRequestDTO");
@@ -146,8 +147,8 @@ class ValidationTests {
         ReservationRequestDTO dtoValide = ReservationRequestDTO.builder()
                 .clientId(1L)
                 .vehiculeId(1L)
-                .dateDebut(LocalDate.now().plusDays(1))
-                .dateFin(LocalDate.now().plusDays(5))
+                .dateDebut(LocalDate.now(ZoneId.systemDefault()).plusDays(1))
+                .dateFin(LocalDate.now(ZoneId.systemDefault()).plusDays(5))
                 .build();
 
         // 1. Validation Bean Validation

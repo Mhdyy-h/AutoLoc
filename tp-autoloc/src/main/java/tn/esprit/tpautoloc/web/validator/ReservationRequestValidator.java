@@ -6,6 +6,7 @@ import org.springframework.validation.Validator;
 import tn.esprit.tpautoloc.web.dto.ReservationRequestDTO;
 
 import java.time.LocalDate;
+import java.time.ZoneId;
 
 @Component
 public class ReservationRequestValidator implements Validator {
@@ -23,7 +24,7 @@ public class ReservationRequestValidator implements Validator {
             return; // Les champs obligatoires sont traités par Bean Validation.
         }
 
-        if (dto.getDateDebut().isBefore(LocalDate.now())) {
+        if (dto.getDateDebut().isBefore(LocalDate.now(ZoneId.systemDefault()))) {
             errors.rejectValue("dateDebut",
                     "reservation.dateDebut.passee",
                     "La date de début doit être aujourd'hui ou dans le futur");

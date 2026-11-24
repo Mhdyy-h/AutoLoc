@@ -16,15 +16,12 @@ import static org.assertj.core.api.Assertions.assertThat;
 class TarificationStrategyFactoryTest {
 
     private TarificationStrategyFactory factory;
-    private TarifStandardStrategy standard;
-    private TarifWeekendStrategy weekend;
-    private TarifLongueDureeStrategy longueDuree;
 
     @BeforeEach
     void setUp() {
-        standard = new TarifStandardStrategy();
-        weekend = new TarifWeekendStrategy();
-        longueDuree = new TarifLongueDureeStrategy();
+        TarifStandardStrategy standard = new TarifStandardStrategy();
+        TarifWeekendStrategy weekend = new TarifWeekendStrategy();
+        TarifLongueDureeStrategy longueDuree = new TarifLongueDureeStrategy();
         factory = new TarificationStrategyFactory(List.of(standard, weekend, longueDuree));
     }
 
