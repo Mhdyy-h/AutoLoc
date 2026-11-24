@@ -34,4 +34,8 @@ public class Client {
     public Long getId() {
         return idClient;
     }
+
+    public void setId(Long id) {
+        this.idClient = id;
+    }
 }

@@ -38,4 +38,8 @@ public class Agence {
     public Long getId() {
         return idAgence;
     }
+
+    public void setId(Long id) {
+        this.idAgence = id;
+    }
 }

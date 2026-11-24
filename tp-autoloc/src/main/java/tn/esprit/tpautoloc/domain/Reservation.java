@@ -41,4 +41,8 @@ public class Reservation {
     public Long getId() {
         return idReservation;
     }
+
+    public void setId(Long id) {
+        this.idReservation = id;
+    }
 }

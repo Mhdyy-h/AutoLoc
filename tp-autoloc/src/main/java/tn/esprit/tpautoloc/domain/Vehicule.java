@@ -58,4 +58,8 @@ public class Vehicule {
     public Long getId() {
         return idVehicule;
     }
+
+    public void setId(Long id) {
+        this.idVehicule = id;
+    }
 }

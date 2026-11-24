@@ -3,42 +3,60 @@ package tn.esprit.tpautoloc.service.impl;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import tn.esprit.tpautoloc.domain.Agence;
 import tn.esprit.tpautoloc.domain.Employe;
 import tn.esprit.tpautoloc.exception.ResourceNotFoundException;
+import tn.esprit.tpautoloc.repository.IAgenceRepository;
 import tn.esprit.tpautoloc.repository.IEmployeRepository;
 import tn.esprit.tpautoloc.service.IEmployeService;
+import tn.esprit.tpautoloc.web.dto.EmployeDTO;
+import tn.esprit.tpautoloc.web.mapper.EmployeMapper;
 
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class EmployeServiceImpl implements IEmployeService {
 
     private final IEmployeRepository employeRepository;
+    private final IAgenceRepository agenceRepository;
+    private final EmployeMapper employeMapper;
 
     @Override
-    public Employe create(Employe employe) {
-        validerAttributsObligatoires(employe);
-        return employeRepository.save(employe);
+    public EmployeDTO create(EmployeDTO dto) {
+        Employe employe = employeMapper.toEntity(dto);
+        if (dto.getAgenceId() != null) {
+            Agence agence = agenceRepository.findById(dto.getAgenceId())
+                    .orElseThrow(() -> new ResourceNotFoundException("Agence", dto.getAgenceId()));
+            employe.setAgence(agence);
+        }
+        return employeMapper.toDto(employeRepository.save(employe));
     }
 
     @Override
-    public Employe findById(Long id) {
-        return employeRepository.findById(id)
+    @Transactional(readOnly = true)
+    public EmployeDTO findById(Long id) {
+        Employe employe = employeRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Employe", id));
+        return employeMapper.toDto(employe);
     }
 
     @Override
-    public List<Employe> findAll() {
-        return employeRepository.findAll();
+    @Transactional(readOnly = true)
+    public List<EmployeDTO> findAll() {
+        return employeRepository.findAll().stream()
+                .map(employeMapper::toDto)
+                .toList();
     }
 
     @Override
-    public Employe update(Long id, Employe employe) {
-        validerAttributsObligatoires(employe);
-        Employe existant = findById(id);
-        existant.setNom(employe.getNom());
-        existant.setPrenom(employe.getPrenom());
-        existant.setRole(employe.getRole());
-        return employeRepository.save(existant);
+    public EmployeDTO update(Long id, EmployeDTO dto) {
+        Employe existant = employeRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Employe", id));
+        existant.setNom(dto.getNom());
+        existant.setPrenom(dto.getPrenom());
+        existant.setRole(dto.getRole());
+        return employeMapper.toDto(employeRepository.save(existant));
     }
 
     @Override
@@ -49,19 +67,26 @@ public class EmployeServiceImpl implements IEmployeService {
         employeRepository.deleteById(id);
     }
 
-    // ---- règle de gestion ----
-    private void validerAttributsObligatoires(Employe employe) {
-        if (employe.getNom() == null || employe.getNom().isBlank()) {
-            throw new IllegalArgumentException(
-                    "Le nom de l'employé est obligatoire et ne peut pas être vide.");
+    // ---- Partie 1 : Affectation / Désaffectation ----
+
+    @Override
+    public void affecterEmployeAAgence(Long employeId, Long agenceId) {
+        Employe employe = employeRepository.findById(employeId)
+                .orElseThrow(() -> new ResourceNotFoundException("Employé", employeId));
+        Agence agence = agenceRepository.findById(agenceId)
+                .orElseThrow(() -> new ResourceNotFoundException("Agence", agenceId));
+        employe.setAgence(agence);
+        employeRepository.save(employe);
+    }
+
+    @Override
+    public void desaffecterEmployeDeAgence(Long employeId) {
+        Employe employe = employeRepository.findById(employeId)
+                .orElseThrow(() -> new ResourceNotFoundException("Employé", employeId));
+        if (employe.getAgence() == null) {
+            throw new IllegalStateException("L'employé n'est rattaché à aucune agence.");
         }
-        if (employe.getPrenom() == null || employe.getPrenom().isBlank()) {
-            throw new IllegalArgumentException(
-                    "Le prénom de l'employé est obligatoire et ne peut pas être vide.");
-        }
-        if (employe.getRole() == null) {
-            throw new IllegalArgumentException(
-                    "Le rôle (poste) de l'employé est obligatoire.");
-        }
+        employe.setAgence(null);
+        employeRepository.save(employe);
     }
 }

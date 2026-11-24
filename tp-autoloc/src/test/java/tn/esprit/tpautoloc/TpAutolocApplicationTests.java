@@ -7,6 +7,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import tn.esprit.tpautoloc.domain.*;
 import tn.esprit.tpautoloc.domain.enums.*;
 import tn.esprit.tpautoloc.service.*;
+import tn.esprit.tpautoloc.web.dto.*;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -61,32 +62,32 @@ class TpAutolocApplicationTests {
         System.out.println("\n========== TEST AGENCE SERVICE ==========");
 
         // --- Création d'une agence ---
-        Agence agence = new Agence();
+        AgenceDTO agence = new AgenceDTO();
         agence.setNom("Agence Tunis Centre");
         agence.setVille("Tunis");
         agence.setAdresse("12 Avenue Habib Bourguiba");
         agence.setTelephone("71123456");
 
         // --- Enregistrement ---
-        Agence agenceSauvegardee = agenceService.create(agence);
+        AgenceDTO agenceSauvegardee = agenceService.create(agence);
         System.out.println("Agence enregistrée : " + agenceSauvegardee);
-        System.out.println("  ID  : " + agenceSauvegardee.getIdAgence());
+        System.out.println("  ID  : " + agenceSauvegardee.getId());
         System.out.println("  Nom : " + agenceSauvegardee.getNom());
-        assertNotNull(agenceSauvegardee.getIdAgence(),
+        assertNotNull(agenceSauvegardee.getId(),
                 "L'ID généré ne doit pas être null après persistance.");
 
         // --- findAll() ---
-        List<Agence> toutesLesAgences = agenceService.findAll();
+        List<AgenceDTO> toutesLesAgences = agenceService.findAll();
         System.out.println("\nListe de toutes les agences (" + toutesLesAgences.size() + ") :");
-        toutesLesAgences.forEach(a -> System.out.println("  - [" + a.getIdAgence() + "] " + a.getNom()));
+        toutesLesAgences.forEach(a -> System.out.println("  - [" + a.getId() + "] " + a.getNom()));
         assertFalse(toutesLesAgences.isEmpty(), "La liste des agences ne doit pas être vide.");
 
         // --- findById() ---
-        Agence agenceTrouvee = agenceService.findById(agenceSauvegardee.getIdAgence());
-        System.out.println("\nAgence trouvée par ID " + agenceSauvegardee.getIdAgence()
+        AgenceDTO agenceTrouvee = agenceService.findById(agenceSauvegardee.getId());
+        System.out.println("\nAgence trouvée par ID " + agenceSauvegardee.getId()
                 + " : " + agenceTrouvee.getNom());
         assertNotNull(agenceTrouvee, "L'agence recherchée par ID ne doit pas être null.");
-        assertEquals(agenceSauvegardee.getIdAgence(), agenceTrouvee.getIdAgence());
+        assertEquals(agenceSauvegardee.getId(), agenceTrouvee.getId());
 
         // --- count() (via findAll().size()) ---
         long nombreAgences = agenceService.findAll().size();
@@ -94,13 +95,13 @@ class TpAutolocApplicationTests {
         assertTrue(nombreAgences > 0, "Il doit y avoir au moins une agence en base.");
 
         // --- deleteById() + vérification ---
-        agenceService.deleteById(agenceSauvegardee.getIdAgence());
-        System.out.println("\nAgence supprimée (ID " + agenceSauvegardee.getIdAgence() + ").");
+        agenceService.deleteById(agenceSauvegardee.getId());
+        System.out.println("\nAgence supprimée (ID " + agenceSauvegardee.getId() + ").");
 
         // Vérification : findById doit lever ResourceNotFoundException
         assertThrows(
                 Exception.class,
-                () -> agenceService.findById(agenceSauvegardee.getIdAgence()),
+                () -> agenceService.findById(agenceSauvegardee.getId()),
                 "findById après suppression doit lever une exception."
         );
         System.out.println("Vérification OK : l'agence n'existe plus en base.");
@@ -115,7 +116,7 @@ class TpAutolocApplicationTests {
         System.out.println("\n========== TEST CLIENT SERVICE ==========");
 
         // --- Création de deux clients ---
-        Client client1 = new Client();
+        ClientDTO client1 = new ClientDTO();
         client1.setNom("Ben Salah");
         client1.setPrenom("Amira");
         client1.setEmail("amira.bensalah@email.com");
@@ -123,7 +124,7 @@ class TpAutolocApplicationTests {
         client1.setNumPermis("TN123456");
         client1.setDateInscription(LocalDate.now());
 
-        Client client2 = new Client();
+        ClientDTO client2 = new ClientDTO();
         client2.setNom("Trabelsi");
         client2.setPrenom("Yassine");
         client2.setEmail("yassine.trabelsi@email.com");
@@ -132,29 +133,29 @@ class TpAutolocApplicationTests {
         client2.setDateInscription(LocalDate.now());
 
         // --- Enregistrement des deux clients ---
-        Client c1Sauvegarde = clientService.create(client1);
-        Client c2Sauvegarde = clientService.create(client2);
-        System.out.println("Client 1 enregistré : [" + c1Sauvegarde.getIdClient()
+        ClientDTO c1Sauvegarde = clientService.create(client1);
+        ClientDTO c2Sauvegarde = clientService.create(client2);
+        System.out.println("Client 1 enregistré : [" + c1Sauvegarde.getId()
                 + "] " + c1Sauvegarde.getNom() + " " + c1Sauvegarde.getPrenom());
-        System.out.println("Client 2 enregistré : [" + c2Sauvegarde.getIdClient()
+        System.out.println("Client 2 enregistré : [" + c2Sauvegarde.getId()
                 + "] " + c2Sauvegarde.getNom() + " " + c2Sauvegarde.getPrenom());
-        assertNotNull(c1Sauvegarde.getIdClient(), "L'ID du client 1 ne doit pas être null.");
-        assertNotNull(c2Sauvegarde.getIdClient(), "L'ID du client 2 ne doit pas être null.");
-        assertNotEquals(c1Sauvegarde.getIdClient(), c2Sauvegarde.getIdClient(),
+        assertNotNull(c1Sauvegarde.getId(), "L'ID du client 1 ne doit pas être null.");
+        assertNotNull(c2Sauvegarde.getId(), "L'ID du client 2 ne doit pas être null.");
+        assertNotEquals(c1Sauvegarde.getId(), c2Sauvegarde.getId(),
                 "Les deux clients doivent avoir des IDs différents.");
 
         // --- findAll() ---
-        List<Client> tousLesClients = clientService.findAll();
+        List<ClientDTO> tousLesClients = clientService.findAll();
         System.out.println("\nListe de tous les clients (" + tousLesClients.size() + ") :");
         tousLesClients.forEach(c -> System.out.println(
-                "  - [" + c.getIdClient() + "] " + c.getNom() + " " + c.getPrenom()
+                "  - [" + c.getId() + "] " + c.getNom() + " " + c.getPrenom()
                         + " | email: " + c.getEmail()));
         assertTrue(tousLesClients.size() >= 2,
                 "Il doit y avoir au moins 2 clients après l'enregistrement.");
 
         // --- findById() ---
-        Client clientTrouve = clientService.findById(c1Sauvegarde.getIdClient());
-        System.out.println("\nClient trouvé par ID " + c1Sauvegarde.getIdClient()
+        ClientDTO clientTrouve = clientService.findById(c1Sauvegarde.getId());
+        System.out.println("\nClient trouvé par ID " + c1Sauvegarde.getId()
                 + " : " + clientTrouve.getNom() + " " + clientTrouve.getPrenom());
         assertNotNull(clientTrouve, "Le client recherché par ID ne doit pas être null.");
         assertEquals("Ben Salah", clientTrouve.getNom());
@@ -165,17 +166,17 @@ class TpAutolocApplicationTests {
         assertTrue(nombreClients >= 2);
 
         // --- deleteById() client 1 + vérification ---
-        clientService.deleteById(c1Sauvegarde.getIdClient());
-        System.out.println("\nClient 1 supprimé (ID " + c1Sauvegarde.getIdClient() + ").");
+        clientService.deleteById(c1Sauvegarde.getId());
+        System.out.println("\nClient 1 supprimé (ID " + c1Sauvegarde.getId() + ").");
         assertThrows(
                 Exception.class,
-                () -> clientService.findById(c1Sauvegarde.getIdClient()),
+                () -> clientService.findById(c1Sauvegarde.getId()),
                 "findById après suppression doit lever une exception."
         );
         System.out.println("Vérification OK : le client 1 n'existe plus en base.");
 
         // Nettoyage client 2
-        clientService.deleteById(c2Sauvegarde.getIdClient());
+        clientService.deleteById(c2Sauvegarde.getId());
         System.out.println("Client 2 supprimé (nettoyage).");
         System.out.println("=========================================\n");
     }
@@ -188,7 +189,7 @@ class TpAutolocApplicationTests {
         System.out.println("\n========== TEST VEHICULE SERVICE ==========");
 
         // --- Création d'un véhicule ---
-        Vehicule vehicule = new Vehicule();
+        VehiculeDTO vehicule = new VehiculeDTO();
         vehicule.setImmatriculation("123 TUN 4567");
         vehicule.setMarque("Renault");
         vehicule.setModele("Clio");
@@ -197,25 +198,25 @@ class TpAutolocApplicationTests {
         vehicule.setStatut(StatutVehicule.DISPONIBLE);
 
         // --- Enregistrement ---
-        Vehicule vehiculeSauvegarde = vehiculeService.create(vehicule);
-        System.out.println("Véhicule enregistré : [" + vehiculeSauvegarde.getIdVehicule()
+        VehiculeDTO vehiculeSauvegarde = vehiculeService.create(vehicule);
+        System.out.println("Véhicule enregistré : [" + vehiculeSauvegarde.getId()
                 + "] " + vehiculeSauvegarde.getMarque() + " " + vehiculeSauvegarde.getModele()
                 + " | tarif : " + vehiculeSauvegarde.getTarifJournalier() + " TND/j");
-        assertNotNull(vehiculeSauvegarde.getIdVehicule(),
+        assertNotNull(vehiculeSauvegarde.getId(),
                 "L'ID du véhicule ne doit pas être null.");
         assertEquals(new BigDecimal("80.00"), vehiculeSauvegarde.getTarifJournalier());
 
         // --- findAll() ---
-        List<Vehicule> tousLesVehicules = vehiculeService.findAll();
+        List<VehiculeDTO> tousLesVehicules = vehiculeService.findAll();
         System.out.println("\nListe de tous les véhicules (" + tousLesVehicules.size() + ") :");
         tousLesVehicules.forEach(v -> System.out.println(
-                "  - [" + v.getIdVehicule() + "] " + v.getMarque()
+                "  - [" + v.getId() + "] " + v.getMarque()
                         + " " + v.getModele() + " | statut: " + v.getStatut()));
         assertFalse(tousLesVehicules.isEmpty());
 
         // --- findById() ---
-        Vehicule vehiculeTrouve = vehiculeService.findById(vehiculeSauvegarde.getIdVehicule());
-        System.out.println("\nVéhicule trouvé par ID " + vehiculeSauvegarde.getIdVehicule()
+        VehiculeDTO vehiculeTrouve = vehiculeService.findById(vehiculeSauvegarde.getId());
+        System.out.println("\nVéhicule trouvé par ID " + vehiculeSauvegarde.getId()
                 + " : " + vehiculeTrouve.getMarque() + " " + vehiculeTrouve.getModele());
         assertNotNull(vehiculeTrouve);
         assertEquals("Renault", vehiculeTrouve.getMarque());
@@ -226,11 +227,11 @@ class TpAutolocApplicationTests {
         assertTrue(nombreVehicules > 0);
 
         // --- deleteById() + vérification ---
-        vehiculeService.deleteById(vehiculeSauvegarde.getIdVehicule());
-        System.out.println("\nVéhicule supprimé (ID " + vehiculeSauvegarde.getIdVehicule() + ").");
+        vehiculeService.deleteById(vehiculeSauvegarde.getId());
+        System.out.println("\nVéhicule supprimé (ID " + vehiculeSauvegarde.getId() + ").");
         assertThrows(
                 Exception.class,
-                () -> vehiculeService.findById(vehiculeSauvegarde.getIdVehicule()),
+                () -> vehiculeService.findById(vehiculeSauvegarde.getId()),
                 "findById après suppression doit lever une exception."
         );
         System.out.println("Vérification OK : le véhicule n'existe plus en base.");
@@ -245,27 +246,27 @@ class TpAutolocApplicationTests {
         System.out.println("\n========== TEST EMPLOYE SERVICE ==========");
 
         // --- Création ---
-        Employe employe = new Employe();
+        EmployeDTO employe = new EmployeDTO();
         employe.setNom("Khemiri");
         employe.setPrenom("Sami");
         employe.setRole(RoleEmploye.AGENT);
 
         // save()
-        Employe employeSauvegarde = employeService.create(employe);
-        System.out.println("Employé enregistré : [" + employeSauvegarde.getIdEmploye()
+        EmployeDTO employeSauvegarde = employeService.create(employe);
+        System.out.println("Employé enregistré : [" + employeSauvegarde.getId()
                 + "] " + employeSauvegarde.getNom() + " " + employeSauvegarde.getPrenom()
                 + " | rôle : " + employeSauvegarde.getRole());
-        assertNotNull(employeSauvegarde.getIdEmploye());
+        assertNotNull(employeSauvegarde.getId());
 
         // findAll()
-        List<Employe> tousLesEmployes = employeService.findAll();
+        List<EmployeDTO> tousLesEmployes = employeService.findAll();
         System.out.println("\nListe des employés (" + tousLesEmployes.size() + ") :");
         tousLesEmployes.forEach(e -> System.out.println(
-                "  - [" + e.getIdEmploye() + "] " + e.getNom() + " | " + e.getRole()));
+                "  - [" + e.getId() + "] " + e.getNom() + " | " + e.getRole()));
         assertFalse(tousLesEmployes.isEmpty());
 
         // findById()
-        Employe employeTrouve = employeService.findById(employeSauvegarde.getIdEmploye());
+        EmployeDTO employeTrouve = employeService.findById(employeSauvegarde.getId());
         assertNotNull(employeTrouve);
         assertEquals("Khemiri", employeTrouve.getNom());
         System.out.println("\nEmployé trouvé par ID : " + employeTrouve.getNom());
@@ -273,7 +274,7 @@ class TpAutolocApplicationTests {
         // existsById() — simulé via findById sans exception
         boolean existe = true;
         try {
-            employeService.findById(employeSauvegarde.getIdEmploye());
+            employeService.findById(employeSauvegarde.getId());
         } catch (Exception ex) {
             existe = false;
         }
@@ -281,10 +282,10 @@ class TpAutolocApplicationTests {
         System.out.println("L'employé existe avant suppression : " + existe);
 
         // deleteById()
-        employeService.deleteById(employeSauvegarde.getIdEmploye());
-        System.out.println("\nEmployé supprimé (ID " + employeSauvegarde.getIdEmploye() + ").");
+        employeService.deleteById(employeSauvegarde.getId());
+        System.out.println("\nEmployé supprimé (ID " + employeSauvegarde.getId() + ").");
         assertThrows(Exception.class,
-                () -> employeService.findById(employeSauvegarde.getIdEmploye()));
+                () -> employeService.findById(employeSauvegarde.getId()));
         System.out.println("Vérification OK : l'employé n'existe plus.");
         System.out.println("==========================================\n");
     }

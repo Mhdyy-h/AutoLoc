@@ -37,4 +37,8 @@ public class Contrat {
     public Long getId() {
         return idContrat;
     }
+
+    public void setId(Long id) {
+        this.idContrat = id;
+    }
 }

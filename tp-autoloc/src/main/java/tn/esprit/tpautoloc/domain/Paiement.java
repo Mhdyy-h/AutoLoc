@@ -33,4 +33,8 @@ public class Paiement {
     public Long getId() {
         return idPaiement;
     }
+
+    public void setId(Long id) {
+        this.idPaiement = id;
+    }
 }

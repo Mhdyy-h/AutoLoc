@@ -1,9 +1,9 @@
 package tn.esprit.tpautoloc.service;
 
 import java.util.List;
-import tn.esprit.tpautoloc.domain.Paiement;
+import tn.esprit.tpautoloc.web.dto.PaiementDTO;
 
 public interface IPaiementService {
-    Paiement findById(Long id);
-    List<Paiement> findAll();
+    PaiementDTO findById(Long id);
+    List<PaiementDTO> findAll();
 }
