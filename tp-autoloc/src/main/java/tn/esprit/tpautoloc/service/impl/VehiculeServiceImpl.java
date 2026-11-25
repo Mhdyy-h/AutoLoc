@@ -3,10 +3,13 @@ package tn.esprit.tpautoloc.service.impl;
 import java.math.BigDecimal;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import tn.esprit.tpautoloc.domain.Agence;
 import tn.esprit.tpautoloc.domain.Vehicule;
+import tn.esprit.tpautoloc.domain.enums.StatutVehicule;
 import tn.esprit.tpautoloc.exception.ResourceNotFoundException;
 import tn.esprit.tpautoloc.repository.IAgenceRepository;
 import tn.esprit.tpautoloc.repository.IVehiculeRepository;
@@ -95,6 +98,21 @@ public class VehiculeServiceImpl implements IVehiculeService {
         }
         vehicule.setAgence(null);
         vehiculeRepository.save(vehicule);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<VehiculeDTO> findByAgenceVille(String ville) {
+        return vehiculeRepository.findByAgenceVille(ville).stream()
+                .map(vehiculeMapper::toDto)
+                .toList();
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Page<VehiculeDTO> findByStatut(StatutVehicule statut, Pageable pageable) {
+        return vehiculeRepository.findByStatut(statut, pageable)
+                .map(vehiculeMapper::toDto);
     }
 
     // ---- règle de gestion ----

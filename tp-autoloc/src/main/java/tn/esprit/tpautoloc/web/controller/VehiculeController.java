@@ -5,9 +5,12 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import tn.esprit.tpautoloc.domain.enums.StatutVehicule;
 import tn.esprit.tpautoloc.service.IVehiculeService;
 import tn.esprit.tpautoloc.web.dto.VehiculeDTO;
 
@@ -86,5 +89,26 @@ public class VehiculeController {
             @Parameter(description = "Identifiant du véhicule") @PathVariable Long vehiculeId) {
         vehiculeService.desaffecterVehiculeDeAgence(vehiculeId);
         return ResponseEntity.noContent().build();
+    }
+
+    // ---- Atelier 8 — Query Methods ----
+
+    @Operation(summary = "Rechercher les véhicules par ville d'agence")
+    @ApiResponse(responseCode = "200", description = "Liste des véhicules trouvée")
+    @GetMapping("/ville")
+    public ResponseEntity<List<VehiculeDTO>> findByAgenceVille(
+            @Parameter(description = "Ville de l'agence") @RequestParam String ville) {
+        return ResponseEntity.ok(vehiculeService.findByAgenceVille(ville));
+    }
+
+    @Operation(summary = "Lister les véhicules par statut avec pagination")
+    @ApiResponse(responseCode = "200", description = "Page des véhicules récupérée avec succès")
+    @GetMapping("/statut")
+    public ResponseEntity<Page<VehiculeDTO>> findByStatut(
+            @Parameter(description = "Statut du véhicule") @RequestParam StatutVehicule statut,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "5") int size) {
+        Page<VehiculeDTO> vehicules = vehiculeService.findByStatut(statut, PageRequest.of(page, size));
+        return ResponseEntity.ok(vehicules);
     }
 }

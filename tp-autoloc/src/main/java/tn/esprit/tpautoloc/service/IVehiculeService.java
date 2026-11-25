@@ -1,6 +1,9 @@
 package tn.esprit.tpautoloc.service;
 
 import java.util.List;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import tn.esprit.tpautoloc.domain.enums.StatutVehicule;
 import tn.esprit.tpautoloc.web.dto.VehiculeDTO;
 
 public interface IVehiculeService {
@@ -25,4 +28,8 @@ public interface IVehiculeService {
     // Partie 1 — Affectation / Désaffectation
     void affecterVehiculeAAgence(Long vehiculeId, Long agenceId);
     void desaffecterVehiculeDeAgence(Long vehiculeId);
+
+    // Atelier 8 — Query Methods
+    List<VehiculeDTO> findByAgenceVille(String ville);
+    Page<VehiculeDTO> findByStatut(StatutVehicule statut, Pageable pageable);
 }
